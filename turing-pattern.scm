@@ -12,12 +12,12 @@
 ; pattern script to work.
 
 ; FIXME: the progress bar doesnt work
-(define (hp-threshold-blur-loop image layer layer-name iteration repeats diffusion)
+(define (hp-threshold-blur-loop image layer layer-name iteration repeats diffusion hp-radius)
         (begin
         (gimp-progress-update (/ iteration repeats))
         ; High-pass.
         (high-pass image layer
-                   6 ; radius
+                   hp-radius ; radius
                    0 ; mode
                    FALSE ; keep original layer?
         )
@@ -39,11 +39,11 @@
         )
         ; Loop.
         (if (<= iteration repeats)
-            (hp-threshold-blur-loop image layer layer-name (+ iteration 1) repeats diffusion))
+            (hp-threshold-blur-loop image layer layer-name (+ iteration 1) repeats diffusion hp-radius))
         )
 )
 
-(define (script-fu-turing-pattern image repeats diffusion)
+(define (script-fu-turing-pattern image repeats diffusion hp-radius)
     (let* ((width (car (gimp-image-width image)))
            (height (car (gimp-image-height image)))
            (image-type (car (gimp-image-base-type image)))
@@ -77,7 +77,7 @@
                                58 ; value
             )
             ; Apply high-pass / threshold / blur cycle repeatedly.
-            (hp-threshold-blur-loop image layer layer-name 1 repeats diffusion)
+            (hp-threshold-blur-loop image layer layer-name 1 repeats diffusion hp-radius)
             ; Get the turing pattern layer handle.
             (set! layer (car (gimp-image-get-layer-by-name image layer-name)))
             ; Sharpen the layer.
@@ -104,5 +104,6 @@
     SF-IMAGE "Image" 0
     SF-ADJUSTMENT "Repeats" '(10 1 100 1 10 1 0)
     SF-ADJUSTMENT "Diffusion" '(7 1 15 1 3 1 0)
+    SF-ADJUSTMENT "High-Pass Radius" '(6 4 50 1 5 1 0)
 )
 (script-fu-menu-register "script-fu-turing-pattern" "<Image>/Filters/Render")

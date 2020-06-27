@@ -14,5 +14,11 @@ Scripts for GIMP
   modifications of the script may make it relevant.
 
 - diffusion: the radius of the blur used in the cyclic process giving rise the
-  patterns. This parameter is called diffusion because it plays the same role
-  diffusion in the chemical models where Turing patterns usually arise.
+  patterns. As a rule of thumb, the larger the diffusion, the larger and the
+  more "dislocated" the patterns will look. This parameter is called diffusion
+  because it plays the same role diffusion in the chemical models where Turing
+  patterns usually arise.
+
+- high-pass radius: the radius of the high-pass filter used in the cyclic
+  process giving rise to the pattern. As for diffusion, a large high-pass
+  radius will make the patterns bigger, but also less roundish.
