@@ -22,3 +22,8 @@ Scripts for GIMP
 - high-pass radius: the radius of the high-pass filter used in the cyclic
   process giving rise to the pattern. As for diffusion, a large high-pass
   radius will make the patterns bigger, but also less roundish.
+
+- create new layer?: boolean stating whether the script should create a new
+  layer and produce the pattern from scratch (using perlin noise for
+  initialization) or transform the current layer (it will be edited in place,
+  but the changes caused by this script can be reversed with a single ctrl-z).

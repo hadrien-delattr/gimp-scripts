@@ -43,39 +43,47 @@
         )
 )
 
-(define (script-fu-turing-pattern image repeats diffusion hp-radius)
+(define (script-fu-turing-pattern image layer repeats diffusion hp-radius create-new-layer?)
     (let* ((width (car (gimp-image-width image)))
            (height (car (gimp-image-height image)))
            (image-type (car (gimp-image-base-type image)))
-           (layer (car (gimp-layer-new image width height image-type "turing-pattern" 100 NORMAL-MODE)))
+           ;(layer (car (gimp-layer-new image width height image-type "turing-pattern" 100 NORMAL-MODE)))
            (layer-name (car (gimp-item-get-name layer)))
           )
           (begin
             (gimp-image-undo-group-start image)
-            ; Add a layer to the current image.
-            (gimp-drawable-fill layer BACKGROUND-FILL)
-            (gimp-image-insert-layer image layer 0 0)
-            ; Set the layer name to the name of the layer which is *actually*
-            ; inserted. Indeed, the layer is supposed to be called
-            ; "turing-pattern", but if there is already a layer named like
-            ; that, GIMP will give it another name such as "turing-pattern #1".
+            (if (= create-new-layer? TRUE)
+                (begin
+                  ; Add a layer to the current image.
+                  ; The `layer` variable now points to this new layer instead
+                  ; of the one provided as parameter.
+                  (set! layer (car (gimp-layer-new image width height image-type "turing-pattern" 100 NORMAL-MODE)))
+                  ; Insert the new layer in the stack of the current image.
+                  (gimp-image-insert-layer image layer 0 0)
+                  ; Fill it with perlin noise.
+                  (plug-in-solid-noise RUN-NONINTERACTIVE image layer
+                                       TRUE ; tileable
+                                       FALSE ; turbulent
+                                       (random 2147483647) ; random seed
+                                       3 ; detail level
+                                       (min (* (/ width height) 8) 16) ; xsize
+                                       (min (* (/ height width) 8) 16) ; ysize
+                  )
+                  ; Add value noise.
+                  (plug-in-hsv-noise RUN-NONINTERACTIVE image layer
+                                     2 ; dulling
+                                     0 ; hue
+                                     0 ; saturation
+                                     58 ; value
+                  )
+                )
+            )
+            ; If a new layer is inserted, its name is supposed to be
+            ; "turing-pattern". However if there is already a layer with that
+            ; name, GIMP will name it something like "turing-pattern #1". It
+            ; is then necessary to get the name of the layer which is actually
+            ; inserted.
             (set! layer-name (car (gimp-item-get-name layer)))
-            ; Render perlin noise.
-            (plug-in-solid-noise RUN-NONINTERACTIVE image layer
-                                 TRUE ; tileable
-                                 FALSE ; turbulent
-                                 (random 2147483647) ; random seed
-                                 3 ; detail level
-                                 (min (* (/ width height) 8) 16) ; xsize
-                                 (min (* (/ height width) 8) 16) ; ysize
-            )
-            ; Add noise.
-            (plug-in-hsv-noise RUN-NONINTERACTIVE image layer
-                               2 ; dulling
-                               0 ; hue
-                               0 ; saturation
-                               58 ; value
-            )
             ; Apply high-pass / threshold / blur cycle repeatedly.
             (hp-threshold-blur-loop image layer layer-name 1 repeats diffusion hp-radius)
             ; Get the turing pattern layer handle.
@@ -102,8 +110,10 @@
     "25/06/20"
     "RGB* GRAY*"
     SF-IMAGE "Image" 0
+    SF-DRAWABLE "Layer" 0
     SF-ADJUSTMENT "Repeats" '(10 1 100 1 10 1 0)
-    SF-ADJUSTMENT "Diffusion" '(7 1 15 1 3 1 0)
+    SF-ADJUSTMENT "Diffusion" '(7 1 30 1 3 1 0)
     SF-ADJUSTMENT "High-Pass Radius" '(6 4 50 1 5 1 0)
+    SF-TOGGLE "Create new layer?" TRUE
 )
 (script-fu-menu-register "script-fu-turing-pattern" "<Image>/Filters/Render")
