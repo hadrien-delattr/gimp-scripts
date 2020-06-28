@@ -47,7 +47,6 @@
     (let* ((width (car (gimp-image-width image)))
            (height (car (gimp-image-height image)))
            (image-type (car (gimp-image-base-type image)))
-           ;(layer (car (gimp-layer-new image width height image-type "turing-pattern" 100 NORMAL-MODE)))
            (layer-name (car (gimp-item-get-name layer)))
           )
           (begin
@@ -98,6 +97,7 @@
             (gimp-progress-end)
             (gimp-image-undo-group-end image)
             (gimp-displays-flush)
+            layer
           )
     )
 )
