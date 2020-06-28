@@ -6,7 +6,7 @@ Scripts for GIMP
 
 **NOTE**: this script relies on Rob Antonishen's high-pass script (cf [this post on his blog](https://www.silent9.com/blog/archives/152-High-Pass-Filter-Plugin.html) and [this entry on gimper.net](https://gimper.net/resources/high-pass-filter.352/)). This script must then be installed for the turing pattern script to work.
 
-![script output, with a new layer created from scratch](https://imgur.com/gallery/CVJTUBN)
+![script output, with a new layer created from scratch](https://imgur.com/gallery/CVJTUBN.png)
 
 ## controls
 
