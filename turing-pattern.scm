@@ -56,7 +56,7 @@
                   ; Add a layer to the current image.
                   ; The `layer` variable now points to this new layer instead
                   ; of the one provided as parameter.
-                  (set! layer (car (gimp-layer-new image width height image-type "turing-pattern" 100 NORMAL-MODE)))
+                  (set! layer (car (gimp-layer-new image width height image-type "turing-pattern" 100 LAYER-MODE-NORMAL)))
                   ; Insert the new layer in the stack of the current image.
                   (gimp-image-insert-layer image layer 0 0)
                   ; Fill it with perlin noise.
