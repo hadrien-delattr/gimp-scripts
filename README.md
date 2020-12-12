@@ -31,3 +31,7 @@ Examples can be found [here](https://imgur.com/gallery/CVJTUBN)
   layer and produce the pattern from scratch (using perlin noise for
   initialization) or transform the current layer (it will be edited in place,
   but the changes caused by this script can be reversed with a single ctrl-z).
+
+# accurate-vhs-effect.scm
+
+Based on a [tutorial](http://gimpchat.com/viewtopic.php?f=10&t=18327&start=0&hilit=jayytt) by JayyTT from http://gimpchat.com
